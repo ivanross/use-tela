@@ -11,6 +11,7 @@
     "canova": "^0.0.3",
     "console-feed": "^3.2.2",
     "leva": "^0.9.18",
+    "lodash": "^4.17.21",
     "react-app-polyfill": "^3.0.0",
     "react-use": "^17.3.1",
     "stats.js": "^0.17.0"
@@ -21,6 +22,7 @@
     "scheduler/tracing": "../node_modules/scheduler/tracing-profiling"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.178",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "parcel": "^2.0.1",

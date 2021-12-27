@@ -5,10 +5,16 @@ import { useWindowSize } from 'react-use';
 import { Leva, useControls } from 'leva';
 import * as C from 'canova';
 import Stats from 'stats.js';
+import SimplexNoise from 'simplex-noise';
+import * as _ from 'lodash';
+
 import { useCanvas } from '../.';
 import { LogsContainer } from './src/LogContainer';
+import { useConst } from './src/useConst';
 
+const simplex = new SimplexNoise();
 const stats = new Stats();
+
 document.body.appendChild(stats.dom);
 function App() {
   const { fill, showConsole } = useControls({
@@ -16,28 +22,42 @@ function App() {
     showConsole: false,
   });
 
-  const size = useWindowSize();
-  const ref = React.useRef<HTMLCanvasElement>(null);
+  const { width, height } = useWindowSize();
+  const model = useConst(() => {
+    class Dot {
+      x = Math.random() * width;
+      y = Math.random() * height;
 
-  useCanvas({
-    ...size,
-    ref,
+      update(time: number) {
+        const { x, y } = this;
+
+        const t = time * 0.008;
+        const amp = 2;
+        const sp = 0.005;
+        this.x += simplex.noise3D(x * sp, y * sp, time * t) * amp;
+        this.y += simplex.noise3D(x * sp, y * sp, 10 + time * t) * amp;
+      }
+    }
+
+    return {
+      dots: _.range(5000).map(() => new Dot()),
+    };
+  });
+
+  const ref = useCanvas({
+    width,
+    height,
     loop: true,
 
     draw: e => {
       stats.begin();
-      const t = e.time;
-      const r = 100 + Math.cos(t * 10) * 10;
+
+      model.dots.forEach(dot => dot.update(e.time));
 
       C.draw(e.canvas, [
-        C.rect(0, 0, e.width, e.height, { fill: 'black' }),
-        C.circle(
-          e.width / 2 + r * Math.cos(t),
-          e.height / 2 + r * Math.sin(t),
-          r / 4,
-          { fill }
-        ),
-        C.circle(e.mouse.x, e.mouse.y, 20, { fill: 'red' }),
+        C.rect(0, 0, e.width, e.height, { fill: 'black', opacity: 0.08 }),
+
+        ...model.dots.map(dot => C.circle(dot.x, dot.y, 2, { fill })),
       ]);
 
       stats.end();
@@ -46,7 +66,7 @@ function App() {
 
   return (
     <>
-      <canvas ref={ref} />
+      <canvas ref={ref} style={{ backgroundColor: 'black' }} />
       {showConsole && <LogsContainer />}
       <Leva collapsed />
     </>
