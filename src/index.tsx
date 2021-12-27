@@ -14,6 +14,7 @@ interface CanvasEvent {
   width: number;
   height: number;
   time: number;
+  mouse: { x: number; y: number };
 }
 
 interface CanvasLoopOptions {
@@ -36,6 +37,8 @@ export function useCanvas(props: CanvasProps, options: CanvasLoopOptions) {
     get time() {
       return (Date.now() - this.startTime) / 1000;
     },
+
+    mouse: { x: 0, y: 0 },
   }));
 
   React.useLayoutEffect(() => {
@@ -48,6 +51,7 @@ export function useCanvas(props: CanvasProps, options: CanvasLoopOptions) {
       width,
       height,
       time: internal.time,
+      mouse: internal.mouse,
     });
 
     onResize?.(createEvent());
@@ -64,6 +68,20 @@ export function useCanvas(props: CanvasProps, options: CanvasLoopOptions) {
       cancel = true;
     };
   }, [width, height, maxDpr, shouldLoop, draw]);
+
+  React.useEffect(() => {
+    const canvas = ref.current;
+
+    if (!canvas) return;
+    const handleMove = (ev: PointerEvent) => {
+      internal.mouse = { x: ev.offsetX, y: ev.offsetY };
+    };
+
+    canvas.addEventListener('pointermove', handleMove);
+    return () => {
+      canvas.removeEventListener('pointermove', handleMove);
+    };
+  }, []);
 
   return ref;
 }

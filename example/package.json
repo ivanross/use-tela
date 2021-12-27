@@ -9,9 +9,11 @@
   },
   "dependencies": {
     "canova": "^0.0.3",
+    "console-feed": "^3.2.2",
     "leva": "^0.9.18",
     "react-app-polyfill": "^3.0.0",
-    "react-use": "^17.3.1"
+    "react-use": "^17.3.1",
+    "stats.js": "^0.17.0"
   },
   "alias": {
     "react": "../node_modules/react",
