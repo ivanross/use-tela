@@ -2,33 +2,43 @@ import * as React from 'react';
 import { useConst } from './useConst';
 import { scaleByDevicePixelRatio } from './scaleByDevicePixelRatio';
 
-interface CanvasProps {
-  width: number;
-  height: number;
-  loop?: boolean;
-  maxDpr?: number;
-}
+export type Point2 = { x: number; y: number };
 
-interface CanvasEvent {
+export interface CanvasEvent {
   canvas: HTMLCanvasElement;
   width: number;
   height: number;
   time: number;
-  mouse: { x: number; y: number };
+  mouse: Point2;
 }
 
-interface CanvasLoopOptions {
+export interface CanvasOptions {
+  width: number;
+  height: number;
+  ref?: React.RefObject<HTMLCanvasElement>;
+
+  loop?: boolean;
+  maxDpr?: number;
+
   draw?: (ev: CanvasEvent) => void;
   onResize?: (ev: CanvasEvent) => void;
 }
 
 const noop = () => {};
 
-export function useCanvas(props: CanvasProps, options: CanvasLoopOptions) {
-  const { width, height, maxDpr = 4, loop: shouldLoop = false } = props;
-  const { draw = noop, onResize } = options;
+export function useCanvas(options: CanvasOptions) {
+  const {
+    width,
+    height,
+    ref: userRef,
+    maxDpr = 4,
+    loop: shouldLoop = false,
+    draw = noop,
+    onResize,
+  } = options;
 
-  const ref = React.useRef<HTMLCanvasElement>(null);
+  const internalRef = React.useRef<HTMLCanvasElement>(null);
+  const ref = userRef ?? internalRef;
 
   const internal = useConst(() => ({
     startTime: Date.now(),
@@ -38,7 +48,7 @@ export function useCanvas(props: CanvasProps, options: CanvasLoopOptions) {
       return (Date.now() - this.startTime) / 1000;
     },
 
-    mouse: { x: 0, y: 0 },
+    mouse: { x: 0, y: 0 } as Point2,
   }));
 
   React.useLayoutEffect(() => {

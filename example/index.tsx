@@ -2,7 +2,7 @@ import 'react-app-polyfill/ie11';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { useWindowSize } from 'react-use';
-import { useControls } from 'leva';
+import { Leva, useControls } from 'leva';
 import * as C from 'canova';
 import Stats from 'stats.js';
 import { useCanvas } from '../.';
@@ -17,35 +17,38 @@ function App() {
   });
 
   const size = useWindowSize();
-  const ref = useCanvas(
-    { ...size, loop: true },
-    {
-      draw: e => {
-        stats.begin();
-        const t = e.time;
-        const r = 100 + Math.cos(t * 10) * 10;
+  const ref = React.useRef<HTMLCanvasElement>(null);
 
-        C.draw(e.canvas, [
-          C.rect(0, 0, e.width, e.height, { fill: 'black' }),
-          C.circle(
-            e.width / 2 + r * Math.cos(t),
-            e.height / 2 + r * Math.sin(t),
-            r / 4,
-            { fill }
-          ),
-          C.circle(e.mouse.x, e.mouse.y, 20, { fill: 'red' }),
-        ]);
+  useCanvas({
+    ...size,
+    ref,
+    loop: true,
 
-        stats.end();
-      },
-      onResize: d => console.log('resize'),
-    }
-  );
+    draw: e => {
+      stats.begin();
+      const t = e.time;
+      const r = 100 + Math.cos(t * 10) * 10;
+
+      C.draw(e.canvas, [
+        C.rect(0, 0, e.width, e.height, { fill: 'black' }),
+        C.circle(
+          e.width / 2 + r * Math.cos(t),
+          e.height / 2 + r * Math.sin(t),
+          r / 4,
+          { fill }
+        ),
+        C.circle(e.mouse.x, e.mouse.y, 20, { fill: 'red' }),
+      ]);
+
+      stats.end();
+    },
+  });
 
   return (
     <>
       <canvas ref={ref} />
       {showConsole && <LogsContainer />}
+      <Leva collapsed />
     </>
   );
 }
