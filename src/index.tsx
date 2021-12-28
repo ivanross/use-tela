@@ -13,10 +13,25 @@ export interface CanvasEvent {
 }
 
 export interface CanvasOptions {
+  /**
+   * Set the canvas width
+   */
   width: number;
+
+  /**
+   * Set the canvas height
+   */
   height: number;
+
+  /**
+   * The ref holding the canvas element. If you omit
+   * it, `useCanvas` will create and return one for you
+   */
   ref?: React.RefObject<HTMLCanvasElement>;
 
+  /**
+   * If `true`,
+   */
   loop?: boolean;
   maxDpr?: number;
 
@@ -51,24 +66,32 @@ export function useCanvas(options: CanvasOptions) {
     mouse: { x: 0, y: 0 } as Point2,
   }));
 
-  React.useLayoutEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return;
-    scaleByDevicePixelRatio(canvas, width, height, maxDpr);
-
-    const createEvent = (): CanvasEvent => ({
+  const event = React.useCallback(
+    (canvas: HTMLCanvasElement): CanvasEvent => ({
       canvas,
       width,
       height,
       time: internal.time,
       mouse: internal.mouse,
-    });
+    }),
+    [width, height, internal]
+  );
 
-    onResize?.(createEvent());
+  React.useLayoutEffect(() => {
+    const canvas = ref.current;
+    if (!canvas) return;
+
+    scaleByDevicePixelRatio(canvas, width, height, maxDpr);
+    onResize?.(event(canvas));
+  }, [width, height, maxDpr, event]);
+
+  React.useLayoutEffect(() => {
+    const canvas = ref.current;
+    if (!canvas) return;
 
     let cancel = false;
     const loop = () => {
-      draw?.(createEvent());
+      draw?.(event(canvas));
       requestAnimationFrame(() => !cancel && shouldLoop && loop());
     };
 
@@ -77,7 +100,7 @@ export function useCanvas(options: CanvasOptions) {
     return () => {
       cancel = true;
     };
-  }, [width, height, maxDpr, shouldLoop, draw]);
+  }, [shouldLoop, draw, event]);
 
   React.useEffect(() => {
     const canvas = ref.current;
