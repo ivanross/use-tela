@@ -10,12 +10,14 @@
   "dependencies": {
     "canova": "^0.0.3",
     "console-feed": "^3.2.2",
+    "d3": "^7.2.1",
     "leva": "^0.9.18",
     "lodash": "^4.17.21",
     "react-app-polyfill": "^3.0.0",
     "react-use": "^17.3.1",
     "simplex-noise": "^3.0.0",
-    "stats.js": "^0.17.0"
+    "stats.js": "^0.17.0",
+    "yogurt-layout": "^0.0.4"
   },
   "alias": {
     "react": "../node_modules/react",
@@ -23,6 +25,7 @@
     "scheduler/tracing": "../node_modules/scheduler/tracing-profiling"
   },
   "devDependencies": {
+    "@types/d3": "^7.1.0",
     "@types/lodash": "^4.14.178",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
