@@ -6,34 +6,34 @@ import { noop } from './noop';
 export type Point2 = { x: number; y: number };
 
 /**
- * Event passed to `useCanvas` callbacks (see `draw` or `onResize`).
+ * Event passed to `useTela` callbacks (see `draw` or `onResize`).
  * It holds informations about the canvas, the loop (such as elapsed time)
  * and user interaction (such as mouse position).
  */
-export interface CanvasEvent {
+export interface TelaEvent {
   /** The canvas DOM element */
   canvas: HTMLCanvasElement;
-  /** Canvas width */
+  /** Tela width */
   width: number;
-  /** Canvas height */
+  /** Tela height */
   height: number;
-  /** Elapsed time from first `useCanvas` call */
+  /** Elapsed time from first `useTela` call */
   time: number;
   /** Mouse position */
   mouse: Point2;
 }
 
-export interface CanvasOptions {
-  /** Canvas width */
+export interface TelaOptions {
+  /** Tela width */
   width: number;
-  /** Canvas height */
+  /** Tela height */
   height: number;
   /** Max devicePixelRatio value. Default is `4` */
   maxDpr?: number;
 
   /**
    * Ref holding the canvas element. If you omit
-   * it, `useCanvas` will create and return one for you
+   * it, `useTela` will create and return one for you
    */
   ref?: React.RefObject<HTMLCanvasElement>;
 
@@ -44,31 +44,32 @@ export interface CanvasOptions {
    * Callback called for every loop frame (when `loop` is `true`)
    * and when the canvas resizes
    */
-  draw?: (ev: CanvasEvent) => void;
+  draw?: (ev: TelaEvent) => void;
   /**
    * Callback called when the canvas resizes
    */
-  onResize?: (ev: CanvasEvent) => void;
+  onResize?: (ev: TelaEvent) => void;
 }
 
 /**
- * Provides functionality to draw on a canvas.
+ * `useTela` provides functionality to draw on a canvas.
  * It requires to pass a width and a height value. The hook scales
  * the canvas based on passed dimensions and the device displayPixelRatio.
  *
  * The core functionality can be accessed by setting the `draw`
- * attribute: it is a callback that accepts a `CanvasEvent`. If
+ * attribute: it is a callback that accepts a `TelaEvent`. If
  * `loop` is set to `true`, draw function will be called for every
- * animation frame.
+ * animation frame, otherwise it will be called once.
  *
  *
  * ```jsx
- * import { useCanvas } from "use-canvas"
+ * import { useTela } from "use-tela"
  *
  * const App = () => {
- *   const ref = useCanvas({
+ *   const ref = useTela({
  *     width: 400,
  *     height: 400,
+ *     loop: true,
  *
  *     draw: (event) => {
  *       const ctx = event.canvas.getContext("2d")
@@ -83,19 +84,19 @@ export interface CanvasOptions {
  *
  * ```js
  * const ref = useRef()
- * useCanvas({ ref, ... })
+ * useTela({ ref, ... })
  * return <canvas ref={ref} />
  * ```
  *
  * or use the returned one:
  *
  * ```js
- * const ref = useCanvas({ ... })
+ * const ref = useTela({ ... })
  * return <canvas ref={ref} />
  * ```
  *
  */
-export function useCanvas(options: CanvasOptions) {
+export function useTela(options: TelaOptions) {
   const {
     width,
     height,
@@ -121,7 +122,7 @@ export function useCanvas(options: CanvasOptions) {
   }));
 
   const event = React.useCallback(
-    (canvas: HTMLCanvasElement): CanvasEvent => ({
+    (canvas: HTMLCanvasElement): TelaEvent => ({
       canvas,
       width,
       height,

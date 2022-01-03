@@ -11,7 +11,7 @@ import SimplexNoise from 'simplex-noise';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 
-import { CanvasEvent, Point2, useCanvas } from '../.';
+import { TelaEvent, Point2, useTela } from '../.';
 import { LogsContainer } from './src/LogContainer';
 import { useConst } from './src/useConst';
 
@@ -111,7 +111,7 @@ class Dot {
     this.position.y += this.speed.y;
   }
 
-  update(ev: CanvasEvent) {
+  update(ev: TelaEvent) {
     this.repel(ev.mouse);
     this.noise(ev.time);
     this.move();
@@ -126,7 +126,7 @@ class Model {
     this.dots = _.range(10_000).map(() => new Dot(_.sample(blocks)!));
   }
 
-  update(blocks: BlockConfig[], ev: CanvasEvent) {
+  update(blocks: BlockConfig[], ev: TelaEvent) {
     _.times(150).forEach(() => {
       this.i = (this.i + 1) % this.dots.length;
       this.dots[this.i].reset(_.sample(blocks)!);
@@ -174,7 +174,7 @@ function App() {
 
   const model = useConst(() => new Model(config));
 
-  const ref = useCanvas({
+  const ref = useTela({
     width: layout.canvas.width,
     height: layout.canvas.height,
     loop: true,

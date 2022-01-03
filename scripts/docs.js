@@ -56,7 +56,7 @@ const updateReadme = pipe(
   ),
 
   tag('hook-description', () => {
-    const regexp = new RegExp(`(${JSDOC.regexp})\\nexport function useCanvas`);
+    const regexp = new RegExp(`(${JSDOC.regexp})\\nexport function useTela`);
     const [, match] = regexp.exec(SCRIPT_FILE);
     const content = JSDOC.clear(match);
 
@@ -64,7 +64,7 @@ const updateReadme = pipe(
   }),
 
   tag('canvas-options', () => {
-    const regexp = /interface CanvasOptions \{(.*\n)*?\}/;
+    const regexp = /interface TelaOptions \{(.*\n)*?\}/;
     const [match] = regexp.exec(SCRIPT_FILE);
 
     const content = MARKDOWN.code(match, 'ts');
@@ -73,16 +73,14 @@ const updateReadme = pipe(
   }),
 
   tag('canvas-event', () => {
-    const regexp = /interface CanvasEvent \{(.*\n)*?\}/;
+    const regexp = /interface TelaEvent \{(.*\n)*?\}/;
     const [match] = regexp.exec(SCRIPT_FILE);
     const content = MARKDOWN.code(match, 'ts');
     return content;
   }),
 
   tag('canvas-event-description', () => {
-    const regexp = new RegExp(
-      `(${JSDOC.regexp})\\nexport interface CanvasEvent`
-    );
+    const regexp = new RegExp(`(${JSDOC.regexp})\\nexport interface TelaEvent`);
     const [, match] = regexp.exec(SCRIPT_FILE);
 
     const content = JSDOC.clear(match);

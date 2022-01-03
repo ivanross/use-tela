@@ -1,7 +1,7 @@
-import { useCanvas } from '../src';
+import { useTela } from '../src';
 
-describe(useCanvas, () => {
+describe(useTela, () => {
   it('should be a function', () => {
-    expect(useCanvas).toBeInstanceOf(Function);
+    expect(useTela).toBeInstanceOf(Function);
   });
 });

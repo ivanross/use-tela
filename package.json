@@ -35,19 +35,19 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "use-canvas",
+  "name": "use-tela",
   "author": "Ivan Rossi <ivanross.me@gmail.com>",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
-  "module": "dist/use-canvas.esm.js",
+  "module": "dist/use-tela.esm.js",
   "size-limit": [
     {
-      "path": "dist/use-canvas.cjs.production.min.js",
+      "path": "dist/use-tela.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/use-canvas.esm.js",
+      "path": "dist/use-tela.esm.js",
       "limit": "10 KB"
     }
   ],
